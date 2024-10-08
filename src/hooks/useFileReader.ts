@@ -1,30 +1,27 @@
-import { ChangeEvent, useState } from "react";
+import { useCallback } from "react";
 import { TransformVariables } from "../utils/TransformVariables";
 import { useVectorStore } from "../stores/useVectorStore";
 import { toast } from "react-toastify";
+import { useDropzone } from "react-dropzone";
+import { fileTypes } from "../config/constants";
+import { useFileContentStore } from "../stores/useFileContentStore";
 
 export const useFileReader = () => {
-    const [fileContent, setFileContent] = useState<string | ArrayBuffer | null | undefined>("");
-    const [Q, setQ] = useState("");
-    const [Z, setZ] = useState("");
-    const [i, setI] = useState("");
-    const [A, setA] = useState("");
-    const [W, setW] = useState("");
-    const { setAArray, setQArray, setZArray, setWArray, clear } = useVectorStore();
+    const { fileContent, setFileContent, setA, setQ, setI, setZ, setW } = useFileContentStore();
+    const { setAArray, setQArray, setZArray, setWArray } = useVectorStore();
 
-    const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-        const { files } = event.target;
+    const onDrop = useCallback((acceptedFiles: File[]) => {
+        acceptedFiles.forEach((file) => {
+            const reader = new FileReader()
 
-        if (files !== undefined) {
-            const reader = new FileReader();
+            reader.onabort = () => toast.error('Se canceló la lectura del archivo')
+            reader.onerror = () => console.log('Error al leer el archivo')
+            reader.onload = () => {
+                setFileContent(reader.result);
 
-            reader.onload = (e) => {
-                // El contenido del archivo se carga aquí
-                setFileContent(e.target?.result); // Asigna el contenido del archivo al estado
+                const content = reader.result; // Obtener el contenido del archivo
 
-                const content = e.target?.result; // Obtener el contenido del archivo
-
-                if (content !== undefined && typeof content === "string") {
+                if (content !== undefined && typeof content === "string" && content !== "") {
                     const lines = content.split("\n"); // Dividir el contenido en líneas
 
                     // Asignar cada línea a una variable según el orden
@@ -45,25 +42,17 @@ export const useFileReader = () => {
 
                         toast.success("Archivo cargado correctamente");
                     }
-                }else{
-                    toast.error("Error al cargar el archivo seleccionado contenido invalido revise porfavor");
+                } else {
+                    toast.error("Error al cargar el archivo contenido invalido revise porfavor");
                 }
-            };
+            }
+            reader.readAsText(file)
+        })
+    }, [setA, setAArray, setFileContent, setI, setQ, setQArray, setW, setWArray, setZ, setZArray]);
 
-            reader.readAsText(files![0]); // Lee el contenido del archivo
-        }
-    };
+    const { getRootProps, getInputProps, isDragActive } = useDropzone({
+        onDrop, accept: fileTypes, disabled: fileContent !== "", multiple: false,
+    });
 
-    const handleClear = () => {
-        setFileContent("");
-        setQ("");
-        setZ("");
-        setI("");
-        setA("");
-        setW("");
-        clear();
-        toast.info("Contenido limpiado");
-    }
-
-    return { fileContent, handleFileChange, Q, Z, i, A, W, handleClear };
+    return { getRootProps, getInputProps, isDragActive };
 }

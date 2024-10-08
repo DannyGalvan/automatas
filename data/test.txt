@@ -1,5 +1,5 @@
-Q={A,B}
-Z={a,b,a1,a2,a3,a5}
+Q={A,B,C,D,E}
+Z={a,b,c,d}
 i=A
-A={B,A}
-W={(A,a,B);(A,b,A);(B,a,B);(B,b,A);(A,a,A);(A,b,B) }
+A={C,B,D}
+W={(A,a,B);(A,b,A);(B,a,B);(B,b,C);(C,a,B);(C,b,A);(D,c,A) }
