@@ -8,10 +8,12 @@ interface VectorStore {
     zArray: string[];
     aArray: string[];
     wArray: Matrix[];
+    errors: Record<string, string>[];
     setQArray: (qArray: string[]) => void;
     setZArray: (zArray: string[]) => void;
     setAArray: (aArray: string[]) => void;
     setWArray: (wArray: Matrix[]) => void;
+    addErrors: (errors: Record<string, string>) => void;
     getValueForCell: (from: string, symbol: string) => string;
     clear: () => void;
     initVectors: () => void;
@@ -22,6 +24,7 @@ export const useVectorStore = create<VectorStore>((set, get) => ({
     zArray: [],
     aArray: [],
     wArray: [],
+    errors: [],
     setQArray: (qArray) => {
         LocalStoreService.setItem(StoreKeys.VECTOR_CONTENT, { ...get(), qArray });
         set({ qArray });
@@ -37,6 +40,10 @@ export const useVectorStore = create<VectorStore>((set, get) => ({
     setWArray: (wArray) => {
         LocalStoreService.setItem(StoreKeys.VECTOR_CONTENT, { ...get(), wArray });
         set({ wArray });
+    },
+    addErrors: (errors) => {
+        LocalStoreService.setItem(StoreKeys.VECTOR_CONTENT, { ...get(), errors: [...get().errors, errors] });
+        set({ errors: [...get().errors, errors] });
     },
     getValueForCell: (row, col) => {
         const transitions = get().wArray.filter(
@@ -55,8 +62,9 @@ export const useVectorStore = create<VectorStore>((set, get) => ({
             zArray: [],
             aArray: [],
             wArray: [],
+            errors: [],
         });
-        set({ qArray: [], zArray: [], aArray: [], wArray: [] });
+        set({ qArray: [], zArray: [], aArray: [], wArray: [], errors: [] });
     },
     initVectors: () => {
         const content = LocalStoreService.getItem<VectorStore>(StoreKeys.VECTOR_CONTENT);
