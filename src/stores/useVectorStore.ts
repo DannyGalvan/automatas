@@ -14,6 +14,7 @@ interface VectorStore {
     setAArray: (aArray: string[]) => void;
     setWArray: (wArray: Matrix[]) => void;
     addErrors: (errors: Record<string, string>) => void;
+    setErrors: (errors: Record<string, string>[]) => void;
     getValueForCell: (from: string, symbol: string) => string;
     clear: () => void;
     initVectors: () => void;
@@ -44,6 +45,10 @@ export const useVectorStore = create<VectorStore>((set, get) => ({
     addErrors: (errors) => {
         LocalStoreService.setItem(StoreKeys.VECTOR_CONTENT, { ...get(), errors: [...get().errors, errors] });
         set({ errors: [...get().errors, errors] });
+    },
+    setErrors: (errors) => {
+        LocalStoreService.setItem(StoreKeys.VECTOR_CONTENT, { ...get(), errors });
+        set({ errors });
     },
     getValueForCell: (row, col) => {
         const transitions = get().wArray.filter(

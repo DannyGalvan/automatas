@@ -8,7 +8,7 @@ import { useFileContentStore } from "../stores/useFileContentStore";
 
 export const useFileReader = () => {
     const { fileContent, setFileContent, setA, setQ, setI, setZ, setW } = useFileContentStore();
-    const { setAArray, setQArray, setZArray, setWArray, addErrors } = useVectorStore();
+    const { setAArray, setQArray, setZArray, setWArray, addErrors, setErrors } = useVectorStore();
 
     const onDrop = useCallback((acceptedFiles: File[]) => {
         acceptedFiles.forEach((file) => {
@@ -18,7 +18,7 @@ export const useFileReader = () => {
             reader.onerror = () => toast.error('Error al leer el archivo')
             reader.onload = () => {
                 setFileContent(reader.result);
-
+                setErrors([]);
                 const content = reader.result; // Obtener el contenido del archivo
 
                 if (content !== undefined && typeof content === "string" && content !== "") {
@@ -70,13 +70,13 @@ export const useFileReader = () => {
                         });
                     }
                 } else {
-                    addErrors({ fileContent: "Error al cargar el archivo, archivo vacío" });
+                    addErrors({ FileContent: "Error al cargar el archivo, archivo vacío" });
                     toast.error("Error al cargar el archivo, archivo vacío");
                 }
             }
             reader.readAsText(file)
         })
-    }, [setA, setAArray, setFileContent, setI, setQ, setQArray, setW, setWArray, setZ, setZArray, addErrors]);
+    }, [setA, setAArray, setFileContent, setI, setQ, setQArray, setW, setWArray, setZ, setZArray, addErrors, setErrors]);
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
         onDrop, accept: fileTypes, disabled: fileContent !== "", multiple: false,
