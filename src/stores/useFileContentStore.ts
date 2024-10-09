@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { LocalStoreService } from "../services/localStoreService";
+import { LocalStoreService } from "../services/LocalStoreService";
 import { StoreKeys } from "../config/constants";
 
 interface FileContentStore {

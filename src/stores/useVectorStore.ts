@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { Matrix } from "../types/Matris";
-import { LocalStoreService } from "../services/localStoreService";
+import { LocalStoreService } from "../services/LocalStoreService";
 import { StoreKeys } from "../config/constants";
 
 interface VectorStore {
