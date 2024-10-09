@@ -1,4 +1,5 @@
 import { AiFillFileText } from "react-icons/ai";
+import { IoIosCloudDone } from "react-icons/io";
 import { RiFileAddLine, RiFileCloudLine } from "react-icons/ri";
 
 interface DropZoneProps {
@@ -14,7 +15,7 @@ export const DropZone = ({ isDragActive, isFileContent }: DropZoneProps) => {
                     isDragActive ?
                         <article className="flex gap-4 justify-center items-center">
                             <RiFileAddLine className="text-gray-600" size={35} />
-                            <p>Suelta el archivo aquí...</p>
+                            <p>Suelte el archivo aquí...</p>
                         </article> :
                         <article className="flex gap-4 justify-center items-center">
                             <AiFillFileText className="text-gray-600" size={35} />
@@ -26,6 +27,7 @@ export const DropZone = ({ isDragActive, isFileContent }: DropZoneProps) => {
                 <article className="flex gap-4 justify-center items-center">
                     <RiFileCloudLine size={35} className="text-gray-600" />
                     <p className="text-2xl font-bold underline">Archivo cargado correctamente</p>
+                    <IoIosCloudDone size={35} className="text-gray-600" />
                 </article>
             </section>)
     )

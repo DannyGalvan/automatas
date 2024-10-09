@@ -8,7 +8,7 @@ export const FileUploader = () => {
 
   return (
     <div className='w-full py-5 px-10'>
-        <h1 className='text-xl font-bold pb-2'>Carga de Archvo TXT</h1>
+        <h1 className='text-xl font-bold pb-2'>Carga de archivo TXT</h1>
         <div {...getRootProps()}>
           <input {...getInputProps()} />
           <DropZone isDragActive={isDragActive} isFileContent={fileContent != ""} />

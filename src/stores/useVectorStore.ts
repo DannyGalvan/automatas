@@ -1,5 +1,7 @@
 import { create } from "zustand";
 import { Matrix } from "../types/Matris";
+import { LocalStoreService } from "../services/localStoreService";
+import { StoreKeys } from "../config/constants";
 
 interface VectorStore {
     qArray: string[];
@@ -12,6 +14,7 @@ interface VectorStore {
     setWArray: (wArray: Matrix[]) => void;
     getValueForCell: (from: string, symbol: string) => string;
     clear: () => void;
+    initVectors: () => void;
 }
 
 export const useVectorStore = create<VectorStore>((set, get) => ({
@@ -19,10 +22,22 @@ export const useVectorStore = create<VectorStore>((set, get) => ({
     zArray: [],
     aArray: [],
     wArray: [],
-    setQArray: (qArray) => set({ qArray }),
-    setZArray: (zArray) => set({ zArray }),
-    setAArray: (aArray) => set({ aArray }),
-    setWArray: (wArray) => set({ wArray }),
+    setQArray: (qArray) => {
+        LocalStoreService.setItem(StoreKeys.VECTOR_CONTENT, { ...get(), qArray });
+        set({ qArray });
+    },
+    setZArray: (zArray) => {
+        LocalStoreService.setItem(StoreKeys.VECTOR_CONTENT, { ...get(), zArray });
+        set({ zArray });
+    },
+    setAArray: (aArray) => {
+        LocalStoreService.setItem(StoreKeys.VECTOR_CONTENT, { ...get(), aArray });
+        set({ aArray });
+    },
+    setWArray: (wArray) => {
+        LocalStoreService.setItem(StoreKeys.VECTOR_CONTENT, { ...get(), wArray });
+        set({ wArray });
+    },
     getValueForCell: (row, col) => {
         const transitions = get().wArray.filter(
             (item) => item.from === row && item.symbol === col
@@ -34,5 +49,19 @@ export const useVectorStore = create<VectorStore>((set, get) => ({
         }
         return "";
     },
-    clear: () => set({ qArray: [], zArray: [], aArray: [], wArray: [] }),
+    clear: () => {
+        LocalStoreService.setItem(StoreKeys.VECTOR_CONTENT, {
+            qArray: [],
+            zArray: [],
+            aArray: [],
+            wArray: [],
+        });
+        set({ qArray: [], zArray: [], aArray: [], wArray: [] });
+    },
+    initVectors: () => {
+        const content = LocalStoreService.getItem<VectorStore>(StoreKeys.VECTOR_CONTENT);
+        if (content) {
+            set(content);
+        }
+    },
 }));
